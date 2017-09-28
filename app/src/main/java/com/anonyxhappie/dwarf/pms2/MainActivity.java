@@ -1,20 +1,16 @@
 package com.anonyxhappie.dwarf.pms2;
 
-import android.content.Context;
-import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         if(isNetworkAvailable()){
-            movieAsyncTask = new MovieAsyncTask(this);
+            movieAsyncTask = new MovieAsyncTask(this, new MovieAsyncTaskListener());
             movieAsyncTask.execute(IMDBURL+"popular"+API);
         }else {
             Toast.makeText(this, "Please Connect to Internet.", Toast.LENGTH_SHORT).show();
@@ -54,11 +50,11 @@ public class MainActivity extends AppCompatActivity {
         if(isNetworkAvailable()){
             switch (item.getItemId()){
                 case R.id.item1:
-                    movieAsyncTask = new MovieAsyncTask(this);
+                    movieAsyncTask = new MovieAsyncTask(this, new MovieAsyncTaskListener());
                     movieAsyncTask.execute(IMDBURL+"popular"+API);
                     return true;
                 case R.id.item2:
-                    movieAsyncTask = new MovieAsyncTask(this);
+                    movieAsyncTask = new MovieAsyncTask(this, new MovieAsyncTaskListener());
                     movieAsyncTask.execute(IMDBURL+"top_rated"+API);
                     return true;
 //            case R.id.item3:
@@ -83,52 +79,32 @@ public class MainActivity extends AppCompatActivity {
         return info != null && info.isConnected();
     }
 
-    private class MovieAsyncTask extends AsyncTask<String, Void, ArrayList<MovieModel>> {
+    public class MovieAsyncTaskListener implements AsyncTaskCompleteListener<ArrayList<MovieModel>> {
 
-        Context context;
-        GridView view;
+        RecyclerView view;
+        RecyclerViewAdapter adapter;
 
-        private MovieAsyncTask(Context context) {
-            this.context = context;
+        public MovieAsyncTaskListener() {
         }
 
         @Override
-        protected ArrayList<MovieModel> doInBackground(String... params) {
-
-            if (params.length < 1 || params[0]==null){
-                return null;
-            }
-            try {
-                 return  Utils.extractDataFromJSON(Utils.makeHttpRequest(Utils.generateUrl(params[0])));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<MovieModel> movieList) {
-            super.onPostExecute(movieList);
+        public void onTaskComplete(ArrayList<MovieModel> movieList) {
             updateUi(movieList);
         }
 
-        private void updateUi(final ArrayList<MovieModel> movieList){
-            view = (GridView) findViewById(R.id.grid_view);
 
-            GridAdapter adapter = new GridAdapter(context, movieList);
+        private void updateUi(final ArrayList<MovieModel> movieList){
+            view = (RecyclerView) findViewById(R.id.grid_view);
+
+            if (getBaseContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+                view.setLayoutManager(new GridLayoutManager(getBaseContext(), 2));
+            else
+                view.setLayoutManager(new GridLayoutManager(getBaseContext(), 4));
+
+            adapter = new RecyclerViewAdapter(getBaseContext(), movieList);
+
             adapter.notifyDataSetChanged();
             view.setAdapter(adapter);
-
-            view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent intent = new Intent(context, DetailsActivity.class);
-                    MovieModel movieModel = (MovieModel) parent.getAdapter().getItem(position);
-                    intent.putExtra("i_key", movieModel);
-                    startActivity(intent);
-                }
-            });
         }
-
     }
 }
