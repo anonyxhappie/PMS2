@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">PMS</string>
     <string name="details_activity">Movie Details</string>
+    <string name="unit">min</string>
 </resources>

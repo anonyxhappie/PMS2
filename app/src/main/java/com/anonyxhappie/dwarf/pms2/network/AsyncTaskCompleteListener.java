@@ -1,4 +1,4 @@
-package com.anonyxhappie.dwarf.pms2;
+package com.anonyxhappie.dwarf.pms2.network;
 
 /**
  * Created by dwarf on 9/28/2017.

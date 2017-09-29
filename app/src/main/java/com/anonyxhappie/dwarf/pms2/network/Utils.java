@@ -1,7 +1,9 @@
-package com.anonyxhappie.dwarf.pms2;
+package com.anonyxhappie.dwarf.pms2.network;
 
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.anonyxhappie.dwarf.pms2.apis.MovieModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,6 +17,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+
+import static com.anonyxhappie.dwarf.pms2.MainActivity.API;
+import static com.anonyxhappie.dwarf.pms2.MainActivity.IMDB_URL;
 
 /**
  * Created by dwarf on 9/23/2017.
@@ -85,27 +90,103 @@ public class Utils {
     }
 
 
-    public static ArrayList<MovieModel> extractDataFromJSON(String movieJSON){
+    public static ArrayList<MovieModel> extractDataFromJSON(String movieJSON) throws IOException {
 
         if (TextUtils.isEmpty(movieJSON)){
             return null;
         }
+
+        String MOVIE_ID;
+        String RUNTIME_URL;
+        String VIDEOS_URL;
+        String REVIEWS_URL;
 
         ArrayList<MovieModel> movieList = new ArrayList<>();
         try {
             JSONObject root = new JSONObject(movieJSON);
             JSONArray results = root.getJSONArray("results");
             JSONObject obj;
+
             for (int i=0; i < results.length(); i++) {
                 obj = results.getJSONObject(i);
-                movieList.add(new MovieModel(0, obj.getDouble("vote_average"), obj.getString("release_date"), "",
-                        "", obj.getString("original_language"), obj.getString("original_title"),
-                        obj.getString("overview"), obj.getString("poster_path")));
+
+                MOVIE_ID = String.valueOf(obj.getInt("id"));
+                RUNTIME_URL = IMDB_URL + MOVIE_ID + API;
+                VIDEOS_URL = IMDB_URL + MOVIE_ID + "/videos" + API;
+                REVIEWS_URL = IMDB_URL + MOVIE_ID + "/reviews" + API;
+
+                movieList.add(new MovieModel(obj.getInt("id"), obj.getString("release_date"),
+                        extractRuntimeFromJSON(makeHttpRequest(generateUrl(RUNTIME_URL))),
+                        obj.getDouble("vote_average"), obj.getString("original_title"),
+                        obj.getString("overview"), obj.getString("poster_path"),
+                        extractTrailersFromJSON(makeHttpRequest(generateUrl(VIDEOS_URL))),
+                        extractReviewsFromJSON(makeHttpRequest(generateUrl(REVIEWS_URL)))));
+                // Log.i(LOGTAG, "HAHHAA:::"+movieList.get(i).getVideos().toString());
             }
         } catch (JSONException e) {
             Log.e(LOGTAG, "Problem Parsing the JSON results.", e);
         }
         return movieList;
+    }
+
+    public static int extractRuntimeFromJSON(String movieJSON) {
+
+        if (TextUtils.isEmpty(movieJSON)) {
+            return 0;
+        }
+
+        try {
+            JSONObject root = new JSONObject(movieJSON);
+            return root.getInt("runtime");
+
+        } catch (JSONException e) {
+            Log.e(LOGTAG, "Problem Parsing the JSON results.", e);
+        }
+        return 0;
+    }
+
+    public static ArrayList<String> extractTrailersFromJSON(String movieJSON) {
+
+        if (TextUtils.isEmpty(movieJSON)) {
+            return null;
+        }
+
+        ArrayList<String> trailers = new ArrayList<>();
+        try {
+            JSONObject root = new JSONObject(movieJSON);
+            JSONArray results = root.getJSONArray("results");
+            JSONObject obj;
+            for (int i = 0; i < results.length(); i++) {
+                obj = results.getJSONObject(i);
+                trailers.add(obj.getString("key"));
+            }
+
+        } catch (JSONException e) {
+            Log.e(LOGTAG, "Problem Parsing the JSON results.", e);
+        }
+        return trailers;
+    }
+
+    public static ArrayList<String> extractReviewsFromJSON(String movieJSON) {
+
+        if (TextUtils.isEmpty(movieJSON)) {
+            return null;
+        }
+
+        ArrayList<String> reviews = new ArrayList<>();
+        try {
+            JSONObject root = new JSONObject(movieJSON);
+            JSONArray results = root.getJSONArray("results");
+            JSONObject obj;
+            for (int i = 0; i < results.length(); i++) {
+                obj = results.getJSONObject(i);
+                reviews.add(obj.getString("content"));
+            }
+
+        } catch (JSONException e) {
+            Log.e(LOGTAG, "Problem Parsing the JSON results.", e);
+        }
+        return reviews;
     }
 
     public static URL generateUrl(String string){
@@ -122,5 +203,9 @@ public class Utils {
 
     public static String generateImageUrl(String string){
         return "http://image.tmdb.org/t/p/w185"+string;
+    }
+
+    public static String generateVideoUrl(String string) {
+        return "https://www.youtube.com/watch?v=" + string;
     }
 }
