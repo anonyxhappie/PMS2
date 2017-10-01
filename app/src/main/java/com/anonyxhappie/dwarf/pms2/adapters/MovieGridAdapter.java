@@ -1,4 +1,4 @@
-package com.anonyxhappie.dwarf.pms2.adapters;
+package com.anonyxhappie.dwarf.pms2;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,10 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.anonyxhappie.dwarf.pms2.DetailsActivity;
-import com.anonyxhappie.dwarf.pms2.R;
-import com.anonyxhappie.dwarf.pms2.apis.MovieModel;
-import com.anonyxhappie.dwarf.pms2.network.Utils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
@@ -24,13 +20,14 @@ import butterknife.ButterKnife;
  * Created by dwarf on 9/28/2017.
  */
 
-public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.ViewHolder> {
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     ArrayList<MovieModel> mMovies;
     LayoutInflater mInflater;
     Context context;
+//    Random random = new Random();
 
-    public MovieGridAdapter(Context context, ArrayList<MovieModel> movies) {
+    public RecyclerViewAdapter(Context context, ArrayList<MovieModel> movies) {
         mInflater = LayoutInflater.from(context);
         mMovies = movies;
         this.context = context;
@@ -46,6 +43,8 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         MovieModel movie = mMovies.get(position);
 
+//        holder.imageView.getLayoutParams().height = getRandomIntRange(300, 500);
+
         RequestOptions options = new RequestOptions()
                 .centerCrop().placeholder(R.drawable.loading_spinner);
         Glide.with(context)
@@ -58,6 +57,10 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.View
     public int getItemCount() {
         return mMovies.size();
     }
+
+//    public int getRandomIntRange(int min, int max){
+//        return random.nextInt((max-min)+min)+max;
+//    }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 

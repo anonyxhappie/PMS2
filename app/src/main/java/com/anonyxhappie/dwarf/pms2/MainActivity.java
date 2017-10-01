@@ -11,19 +11,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.anonyxhappie.dwarf.pms2.adapters.MovieGridAdapter;
-import com.anonyxhappie.dwarf.pms2.apis.MovieModel;
-import com.anonyxhappie.dwarf.pms2.network.AsyncTaskCompleteListener;
-import com.anonyxhappie.dwarf.pms2.network.MovieAsyncTask;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static String IMDB_URL = "https://api.themoviedb.org/3/movie/";
+    public static String IMDBURL = "https://api.themoviedb.org/3/movie/";
+
     public static String API = "?api_key="+ BuildConfig.THEMOVIEDB_ORG_API_KEY +"&language=en-US&page=1";
-    public static String POPULAR_URL = IMDB_URL + "popular" + API;
-    public static String TOP_RATED_URL = IMDB_URL + "top_rated" + API;
 
     public static ArrayList<MovieModel> favouriteList = new ArrayList<>();
 
@@ -36,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(isNetworkAvailable()){
             movieAsyncTask = new MovieAsyncTask(this, new MovieAsyncTaskListener());
-            movieAsyncTask.execute(POPULAR_URL);
+            movieAsyncTask.execute(IMDBURL+"popular"+API);
         }else {
             Toast.makeText(this, "Please Connect to Internet.", Toast.LENGTH_SHORT).show();
         }
@@ -57,11 +51,11 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()){
                 case R.id.item1:
                     movieAsyncTask = new MovieAsyncTask(this, new MovieAsyncTaskListener());
-                    movieAsyncTask.execute(POPULAR_URL);
+                    movieAsyncTask.execute(IMDBURL+"popular"+API);
                     return true;
                 case R.id.item2:
                     movieAsyncTask = new MovieAsyncTask(this, new MovieAsyncTaskListener());
-                    movieAsyncTask.execute(TOP_RATED_URL);
+                    movieAsyncTask.execute(IMDBURL+"top_rated"+API);
                     return true;
 //            case R.id.item3:
 //                movieAsyncTask.updateUi(favouriteList);
@@ -88,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
     public class MovieAsyncTaskListener implements AsyncTaskCompleteListener<ArrayList<MovieModel>> {
 
         RecyclerView view;
-        MovieGridAdapter adapter;
+        RecyclerViewAdapter adapter;
 
         public MovieAsyncTaskListener() {
         }
@@ -107,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             else
                 view.setLayoutManager(new GridLayoutManager(getBaseContext(), 4));
 
-            adapter = new MovieGridAdapter(getBaseContext(), movieList);
+            adapter = new RecyclerViewAdapter(getBaseContext(), movieList);
 
             adapter.notifyDataSetChanged();
             view.setAdapter(adapter);

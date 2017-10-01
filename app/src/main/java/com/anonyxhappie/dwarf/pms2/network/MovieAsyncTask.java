@@ -1,11 +1,7 @@
-package com.anonyxhappie.dwarf.pms2.network;
+package com.anonyxhappie.dwarf.pms2;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
-
-import com.anonyxhappie.dwarf.pms2.apis.MovieModel;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,19 +13,12 @@ import java.util.ArrayList;
 public class MovieAsyncTask extends AsyncTask<String, Void, ArrayList<MovieModel>> {
 
     Context context;
-    ProgressDialog dialog;
     AsyncTaskCompleteListener<ArrayList<MovieModel>> listener;
 
     public MovieAsyncTask(Context context, AsyncTaskCompleteListener<ArrayList<MovieModel>> listener
     ) {
         this.context = context;
         this.listener = listener;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-        dialog = ProgressDialog.show(context, "Hey, Welcome", "Getting Movies, Please Wait...", false, false);
     }
 
     @Override
@@ -46,12 +35,6 @@ public class MovieAsyncTask extends AsyncTask<String, Void, ArrayList<MovieModel
         return null;
     }
 
-    @Override
-    protected void onProgressUpdate(Void... values) {
-        super.onProgressUpdate(values);
-        Toast.makeText(context, "Please Wait", Toast.LENGTH_LONG).show();
-    }
-
     private ArrayList<MovieModel> doInBackgroundHelper(String... params) throws IOException {
         return Utils.extractDataFromJSON(Utils.makeHttpRequest(Utils.generateUrl(params[0])));
     }
@@ -59,7 +42,6 @@ public class MovieAsyncTask extends AsyncTask<String, Void, ArrayList<MovieModel
     @Override
     protected void onPostExecute(ArrayList<MovieModel> movieList) {
         super.onPostExecute(movieList);
-        dialog.dismiss();
         listener.onTaskComplete(movieList);
     }
 
