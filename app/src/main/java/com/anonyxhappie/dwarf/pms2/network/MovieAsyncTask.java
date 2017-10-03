@@ -1,7 +1,9 @@
-package com.anonyxhappie.dwarf.pms2;
+package com.anonyxhappie.dwarf.pms2.network;
 
 import android.content.Context;
 import android.os.AsyncTask;
+
+import com.anonyxhappie.dwarf.pms2.apis.MovieModel;
 
 import java.io.IOException;
 import java.util.ArrayList;

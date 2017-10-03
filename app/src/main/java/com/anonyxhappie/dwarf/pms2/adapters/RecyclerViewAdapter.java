@@ -1,4 +1,4 @@
-package com.anonyxhappie.dwarf.pms2;
+package com.anonyxhappie.dwarf.pms2.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.anonyxhappie.dwarf.pms2.DetailsActivity;
+import com.anonyxhappie.dwarf.pms2.R;
+import com.anonyxhappie.dwarf.pms2.apis.MovieModel;
+import com.anonyxhappie.dwarf.pms2.network.Utils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
@@ -25,7 +29,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     ArrayList<MovieModel> mMovies;
     LayoutInflater mInflater;
     Context context;
-//    Random random = new Random();
 
     public RecyclerViewAdapter(Context context, ArrayList<MovieModel> movies) {
         mInflater = LayoutInflater.from(context);
@@ -43,8 +46,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         MovieModel movie = mMovies.get(position);
 
-//        holder.imageView.getLayoutParams().height = getRandomIntRange(300, 500);
-
         RequestOptions options = new RequestOptions()
                 .centerCrop().placeholder(R.drawable.loading_spinner);
         Glide.with(context)
@@ -57,10 +58,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public int getItemCount() {
         return mMovies.size();
     }
-
-//    public int getRandomIntRange(int min, int max){
-//        return random.nextInt((max-min)+min)+max;
-//    }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 

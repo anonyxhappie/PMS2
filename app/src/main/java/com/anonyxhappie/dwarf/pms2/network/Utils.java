@@ -3,6 +3,7 @@ package com.anonyxhappie.dwarf.pms2.network;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.anonyxhappie.dwarf.pms2.MainActivity;
 import com.anonyxhappie.dwarf.pms2.apis.MovieModel;
 
 import org.json.JSONArray;
@@ -17,9 +18,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-
-import static com.anonyxhappie.dwarf.pms2.MainActivity.API;
-import static com.anonyxhappie.dwarf.pms2.MainActivity.IMDB_URL;
 
 /**
  * Created by dwarf on 9/23/2017.
@@ -111,9 +109,9 @@ public class Utils {
                 obj = results.getJSONObject(i);
 
                 MOVIE_ID = String.valueOf(obj.getInt("id"));
-                RUNTIME_URL = IMDB_URL + MOVIE_ID + API;
-                VIDEOS_URL = IMDB_URL + MOVIE_ID + "/videos" + API;
-                REVIEWS_URL = IMDB_URL + MOVIE_ID + "/reviews" + API;
+                RUNTIME_URL = MainActivity.IMDBURL + MOVIE_ID + MainActivity.API;
+                VIDEOS_URL = MainActivity.IMDBURL + MOVIE_ID + "/videos" + MainActivity.API;
+                REVIEWS_URL = MainActivity.IMDBURL + MOVIE_ID + "/reviews" + MainActivity.API;
 
                 movieList.add(new MovieModel(obj.getInt("id"), obj.getString("release_date"),
                         extractRuntimeFromJSON(makeHttpRequest(generateUrl(RUNTIME_URL))),

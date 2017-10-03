@@ -11,6 +11,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.anonyxhappie.dwarf.pms2.adapters.RecyclerViewAdapter;
+import com.anonyxhappie.dwarf.pms2.apis.MovieModel;
+import com.anonyxhappie.dwarf.pms2.network.AsyncTaskCompleteListener;
+import com.anonyxhappie.dwarf.pms2.network.MovieAsyncTask;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
