@@ -5,13 +5,16 @@ package com.anonyxhappie.dwarf.pms2.adapters;
  */
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.anonyxhappie.dwarf.pms2.R;
+import com.anonyxhappie.dwarf.pms2.network.Utils;
 
 import java.util.ArrayList;
 
@@ -21,31 +24,56 @@ import butterknife.ButterKnife;
 /**
  * Created by dwarf on 9/28/2017.
  */
+public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.ViewHolder> {
 
-public class TrailersAdapter extends ArrayAdapter<String> {
-
+    ArrayList<String> mTrailers;
     LayoutInflater mInflater;
     Context context;
+    String trailer;
 
-    @BindView(R.id.trailer)
-    TextView trailer;
-
-    public TrailersAdapter(Context context, ArrayList<String> objects) {
-        super(context, 0, objects);
-        this.context = context;
+    public TrailersAdapter(Context context, ArrayList<String> trailers) {
         mInflater = LayoutInflater.from(context);
+        mTrailers = trailers;
+        this.context = context;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = mInflater.inflate(R.layout.video_item, parent, false);
+        return new ViewHolder(view);
+    }
 
-        View v = convertView;
-        if (v == null) {
-            v = mInflater.inflate(R.layout.video_item, parent, false);
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        trailer = mTrailers.get(position);
+
+        holder.textView.setText("Trailer " + String.valueOf(position + 1));
+    }
+
+    @Override
+    public int getItemCount() {
+        return mTrailers.size();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        @BindView(R.id.trailer)
+        TextView textView;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
         }
 
-        ButterKnife.bind(this, v);
-        trailer.setText("Trailer " + String.valueOf(position + 1));
-        return v;
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse(Utils.generateVideoUrl(trailer)));
+            context.startActivity(intent);
+
+        }
     }
+
 }
+

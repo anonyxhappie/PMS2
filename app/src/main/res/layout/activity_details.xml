@@ -116,12 +116,12 @@
                 android:text="Trailers:"
                 android:textSize="24sp" />
 
-            <ListView
+            <android.support.v7.widget.RecyclerView
                 android:id="@+id/trailers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            </ListView>
+            </android.support.v7.widget.RecyclerView>
 
             <View
                 android:layout_width="match_parent"
@@ -136,12 +136,12 @@
                 android:text="Reviews:"
                 android:textSize="24sp" />
 
-            <ListView
+            <android.support.v7.widget.RecyclerView
                 android:id="@+id/reviews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            </ListView>
+            </android.support.v7.widget.RecyclerView>
 
         </LinearLayout>
     </ScrollView>
