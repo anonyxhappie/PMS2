@@ -29,6 +29,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     ArrayList<MovieModel> mMovies;
     LayoutInflater mInflater;
     Context context;
+    MovieModel movie;
 
     public RecyclerViewAdapter(Context context, ArrayList<MovieModel> movies) {
         mInflater = LayoutInflater.from(context);
@@ -44,7 +45,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        MovieModel movie = mMovies.get(position);
+        movie = mMovies.get(position);
 
         RequestOptions options = new RequestOptions()
                 .centerCrop().placeholder(R.drawable.loading_spinner);
@@ -70,21 +71,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             itemView.setOnClickListener(this);
         }
 
-        @Override
-        public void onClick(View v) {
-            onItemClick(v, getAdapterPosition());
-        }
-
         MovieModel getItem(int id) {
             return mMovies.get(id);
         }
 
-        public void onItemClick(View view, int position) {
+        @Override
+        public void onClick(View v) {
             Intent intent = new Intent(context, DetailsActivity.class);
-            MovieModel movieModel = getItem(position);
-            intent.putExtra("i_key", movieModel);
+            intent.putExtra("i_key", movie);
             context.startActivity(intent);
+
+
+
         }
+
     }
 
 }
