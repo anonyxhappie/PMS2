@@ -4,32 +4,39 @@ import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.anonyxhappie.dwarf.pms2.adapters.RecyclerViewAdapter;
 import com.anonyxhappie.dwarf.pms2.apis.MovieModel;
-import com.anonyxhappie.dwarf.pms2.network.AsyncTaskCompleteListener;
 import com.anonyxhappie.dwarf.pms2.network.MovieAsyncTask;
+import com.anonyxhappie.dwarf.pms2.network.Utils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<MovieModel>> {
 
+    public static final int SEARCH_LOADER = 22;
+    public static final String BUNDLE_URL_KEY = "com.anonyxhappie.dwarf.pms2";
     public static String IMDBURL = "https://api.themoviedb.org/3/movie/";
-
     public static String API = "?api_key="+ BuildConfig.THEMOVIEDB_ORG_API_KEY +"&language=en-US&page=1";
-
     public static ArrayList<MovieModel> favouriteList = new ArrayList<>();
-
     MovieAsyncTask movieAsyncTask;
     RecyclerView view;
     RecyclerViewAdapter adapter;
     ArrayList<MovieModel> mMovieList;
+    LoaderManager loaderManager;
+    Bundle queryBundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +52,20 @@ public class MainActivity extends AppCompatActivity {
             else
                 view.setLayoutManager(new GridLayoutManager(getBaseContext(), 4));
 
+            queryBundle = new Bundle();
+            queryBundle.putString(BUNDLE_URL_KEY, IMDBURL + "popular" + API);
 
-            movieAsyncTask = new MovieAsyncTask(this, new MovieAsyncTaskListener());
-            movieAsyncTask.execute(IMDBURL+"popular"+API);
+            loaderManager = getSupportLoaderManager();
+            Loader<ArrayList<MovieModel>> loader = loaderManager.getLoader(SEARCH_LOADER);
+            if (loader == null) {
+                Log.v(MainActivity.class.getSimpleName(), "bundle:::null");
+                loaderManager.initLoader(SEARCH_LOADER, queryBundle, this);
+            } else {
+                Log.v(MainActivity.class.getSimpleName(), "bundle:::Notnull");
+                loaderManager.restartLoader(SEARCH_LOADER, queryBundle, this);
+            }
+//            movieAsyncTask = new MovieAsyncTask(this, new MovieAsyncTaskListener());
+//            movieAsyncTask.execute();
             adapter = new RecyclerViewAdapter(getBaseContext());
 
         }else {
@@ -69,13 +87,13 @@ public class MainActivity extends AppCompatActivity {
         if(isNetworkAvailable()){
             switch (item.getItemId()){
                 case R.id.item1:
-                    movieAsyncTask = new MovieAsyncTask(this, new MovieAsyncTaskListener());
-                    movieAsyncTask.execute(IMDBURL+"popular"+API);
+                    queryBundle.putString(BUNDLE_URL_KEY, IMDBURL + "popular" + API);
+                    loaderManager.restartLoader(SEARCH_LOADER, queryBundle, this);
                     adapter.notifyDataSetChanged();
                     return true;
                 case R.id.item2:
-                    movieAsyncTask = new MovieAsyncTask(this, new MovieAsyncTaskListener());
-                    movieAsyncTask.execute(IMDBURL+"top_rated"+API);
+                    queryBundle.putString(BUNDLE_URL_KEY, IMDBURL + "popular" + API);
+                    loaderManager.restartLoader(SEARCH_LOADER, queryBundle, this);
                     adapter.notifyDataSetChanged();
                     return true;
 //            case R.id.item3:
@@ -100,17 +118,69 @@ public class MainActivity extends AppCompatActivity {
         return info != null && info.isConnected();
     }
 
-    public class MovieAsyncTaskListener implements AsyncTaskCompleteListener<ArrayList<MovieModel>> {
+    @Override
+    public Loader<ArrayList<MovieModel>> onCreateLoader(int id, final Bundle args) {
 
-        public MovieAsyncTaskListener() {
-        }
+        return new AsyncTaskLoader<ArrayList<MovieModel>>(this) {
 
-        @Override
-        public void onTaskComplete(ArrayList<MovieModel> movieList) {
-            adapter.setMovies(movieList);
-            view.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-        }
+            @Override
+            protected void onStartLoading() {
+                super.onStartLoading();
+                if (args == null) {
+                    return;
+                }
+                forceLoad();
+            }
+
+            @Override
+            public ArrayList<MovieModel> loadInBackground() {
+                String stringUrl = args.getString(BUNDLE_URL_KEY);
+                Log.v(MainActivity.class.getSimpleName(), "bundle:::" + stringUrl);
+                if (stringUrl == null | TextUtils.isEmpty(stringUrl)) {
+                    return null;
+                }
+
+                try {
+                    return Utils.extractDataFromJSON(Utils.makeHttpRequest(Utils.generateUrl(stringUrl)));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onStopLoading() {
+                super.onStopLoading();
+                cancelLoad();
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<ArrayList<MovieModel>> loader, ArrayList<MovieModel> movieList) {
+        adapter.setMovies(movieList);
+        view.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
     }
+
+    @Override
+    public void onLoaderReset(Loader<ArrayList<MovieModel>> loader) {
+
+    }
+
+//
+//    public class MovieAsyncTaskListener implements AsyncTaskCompleteListener<ArrayList<MovieModel>> {
+//
+//        public MovieAsyncTaskListener() {
+//        }
+//
+//        @Override
+//        public void onTaskComplete(ArrayList<MovieModel> movieList) {
+//            adapter.setMovies(movieList);
+//            view.setAdapter(adapter);
+//            adapter.notifyDataSetChanged();
+//        }
+//
+//    }
 }

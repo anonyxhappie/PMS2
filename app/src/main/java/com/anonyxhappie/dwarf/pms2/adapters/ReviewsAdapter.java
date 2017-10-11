@@ -43,8 +43,12 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         String review = mReviews.get(position);
+        if (getItemCount() == 0) {
+            holder.textView.setText("No Reviews Found");
+        } else {
+            holder.textView.setText(review);
+        }
 
-        holder.textView.setText(review);
     }
 
     @Override

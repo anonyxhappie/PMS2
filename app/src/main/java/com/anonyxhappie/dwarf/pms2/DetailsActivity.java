@@ -55,7 +55,7 @@ public class DetailsActivity extends AppCompatActivity {
         Glide.with(this)
                 .load(Utils.generateImageUrl(movieModel.getPoster_path()))
                 .into(poster);
-        runtime.setText(String.valueOf(movieModel.getRuntime()) + R.string.unit);
+        runtime.setText(String.valueOf(movieModel.getRuntime()) + getString(R.string.unit));
         overview.setText(movieModel.getOverview());
         ratings.setText(String.valueOf(movieModel.getVote_average()));
         date.setText(movieModel.getRelease_date());
