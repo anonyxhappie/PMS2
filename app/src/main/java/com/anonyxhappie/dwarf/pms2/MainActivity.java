@@ -27,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<MovieModel> favouriteList = new ArrayList<>();
 
     MovieAsyncTask movieAsyncTask;
+    RecyclerView view;
+    RecyclerViewAdapter adapter;
+    ArrayList<MovieModel> mMovieList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +37,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         if(isNetworkAvailable()){
+
+            view = (RecyclerView) findViewById(R.id.grid_view);
+
+            if (getBaseContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+                view.setLayoutManager(new GridLayoutManager(getBaseContext(), 2));
+            else
+                view.setLayoutManager(new GridLayoutManager(getBaseContext(), 4));
+
+
             movieAsyncTask = new MovieAsyncTask(this, new MovieAsyncTaskListener());
             movieAsyncTask.execute(IMDBURL+"popular"+API);
+            adapter = new RecyclerViewAdapter(getBaseContext());
+
         }else {
             Toast.makeText(this, "Please Connect to Internet.", Toast.LENGTH_SHORT).show();
         }
@@ -57,10 +71,12 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.item1:
                     movieAsyncTask = new MovieAsyncTask(this, new MovieAsyncTaskListener());
                     movieAsyncTask.execute(IMDBURL+"popular"+API);
+                    adapter.notifyDataSetChanged();
                     return true;
                 case R.id.item2:
                     movieAsyncTask = new MovieAsyncTask(this, new MovieAsyncTaskListener());
                     movieAsyncTask.execute(IMDBURL+"top_rated"+API);
+                    adapter.notifyDataSetChanged();
                     return true;
 //            case R.id.item3:
 //                movieAsyncTask.updateUi(favouriteList);
@@ -86,30 +102,15 @@ public class MainActivity extends AppCompatActivity {
 
     public class MovieAsyncTaskListener implements AsyncTaskCompleteListener<ArrayList<MovieModel>> {
 
-        RecyclerView view;
-        RecyclerViewAdapter adapter;
-
         public MovieAsyncTaskListener() {
         }
 
         @Override
         public void onTaskComplete(ArrayList<MovieModel> movieList) {
-            updateUi(movieList);
-        }
-
-
-        private void updateUi(final ArrayList<MovieModel> movieList){
-            view = (RecyclerView) findViewById(R.id.grid_view);
-
-            if (getBaseContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-                view.setLayoutManager(new GridLayoutManager(getBaseContext(), 2));
-            else
-                view.setLayoutManager(new GridLayoutManager(getBaseContext(), 4));
-
-            adapter = new RecyclerViewAdapter(getBaseContext(), movieList);
-
-            adapter.notifyDataSetChanged();
+            adapter.setMovies(movieList);
             view.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
         }
+
     }
 }

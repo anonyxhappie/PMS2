@@ -65,7 +65,7 @@ public class Utils {
                 inputStream.close();
             }
         }
-
+        Log.v(LOGTAG, "JSON:::" + jsonResponse.toString());
         return jsonResponse;
     }
 

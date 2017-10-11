@@ -3,12 +3,14 @@ package com.anonyxhappie.dwarf.pms2.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.anonyxhappie.dwarf.pms2.DetailsActivity;
+import com.anonyxhappie.dwarf.pms2.MainActivity;
 import com.anonyxhappie.dwarf.pms2.R;
 import com.anonyxhappie.dwarf.pms2.apis.MovieModel;
 import com.anonyxhappie.dwarf.pms2.network.Utils;
@@ -31,10 +33,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     Context context;
     MovieModel movie;
 
-    public RecyclerViewAdapter(Context context, ArrayList<MovieModel> movies) {
+    public RecyclerViewAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
-        mMovies = movies;
         this.context = context;
+    }
+
+    public void setMovies(ArrayList<MovieModel> movies) {
+        this.mMovies = movies;
     }
 
     @Override
@@ -71,18 +76,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             itemView.setOnClickListener(this);
         }
 
-        MovieModel getItem(int id) {
-            return mMovies.get(id);
-        }
-
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(context, DetailsActivity.class);
             intent.putExtra("i_key", movie);
+            Log.v(MainActivity.class.getSimpleName(), "movie:::" + movie.getOriginal_title() + "::" + v.toString());
             context.startActivity(intent);
-
-
-
         }
 
     }
