@@ -30,16 +30,13 @@ public class MovieAsyncTask extends AsyncTask<String, Void, ArrayList<MovieModel
             return null;
         }
         try {
-            return doInBackgroundHelper(params);
+            return Utils.extractDataFromJSON(Utils.makeHttpRequest(Utils.generateUrl(params[0])));
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    private ArrayList<MovieModel> doInBackgroundHelper(String... params) throws IOException {
-        return Utils.extractDataFromJSON(Utils.makeHttpRequest(Utils.generateUrl(params[0])));
-    }
 
     @Override
     protected void onPostExecute(ArrayList<MovieModel> movieList) {
