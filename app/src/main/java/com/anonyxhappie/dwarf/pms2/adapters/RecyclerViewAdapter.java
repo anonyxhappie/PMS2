@@ -3,14 +3,12 @@ package com.anonyxhappie.dwarf.pms2.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.anonyxhappie.dwarf.pms2.DetailsActivity;
-import com.anonyxhappie.dwarf.pms2.MainActivity;
 import com.anonyxhappie.dwarf.pms2.R;
 import com.anonyxhappie.dwarf.pms2.apis.MovieModel;
 import com.anonyxhappie.dwarf.pms2.network.Utils;
@@ -80,7 +78,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public void onClick(View v) {
             Intent intent = new Intent(context, DetailsActivity.class);
             intent.putExtra("i_key", movie);
-            Log.v(MainActivity.class.getSimpleName(), "movie:::" + movie.getOriginal_title() + "::" + v.toString());
+//            Log.v(MainActivity.class.getSimpleName(), "movie:::" + movie.getOriginal_title());
             context.startActivity(intent);
         }
 
