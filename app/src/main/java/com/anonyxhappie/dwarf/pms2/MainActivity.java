@@ -38,11 +38,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     LoaderManager mLoaderManager;
     Loader loader;
     ProgressBar progressBar;
+    int isFirstLoad;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        isFirstLoad = 0;
+        Log.v(MainActivity.class.getSimpleName(), ":::Create called");
         if(isNetworkAvailable()){
 
             progressBar = (ProgressBar) findViewById(R.id.loading_spinner);
@@ -67,6 +70,28 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             Toast.makeText(this, "Please Connect to Internet.", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.v(MainActivity.class.getSimpleName(), ":::Resume called");
+        if (adapter != null && isFirstLoad > 0) {
+            mLoaderManager.getLoader(SEARCH_LOADER).cancelLoad();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isFirstLoad++;
+        Log.v(MainActivity.class.getSimpleName(), ":::Stop called");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.v(MainActivity.class.getSimpleName(), ":::Start called");
     }
 
     @Override
@@ -131,7 +156,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 if (stringUrl == null | TextUtils.isEmpty(stringUrl)) {
                     return null;
                 }
-
                 try {
                     return Utils.extractDataFromJSON(Utils.makeHttpRequest(Utils.generateUrl(stringUrl)));
                 } catch (IOException e) {
