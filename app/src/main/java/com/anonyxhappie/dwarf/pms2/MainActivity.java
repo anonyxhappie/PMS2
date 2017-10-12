@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<MovieModel>> {
 
-    public static final int SEARCH_LOADER = 22;
+    public static final int SEARCH_LOADER = 0;
     public static final String BUNDLE_URL_KEY = "com.anonyxhappie.dwarf.pms2";
     public static String IMDBURL = "https://api.themoviedb.org/3/movie/";
     public static String API = "?api_key="+ BuildConfig.THEMOVIEDB_ORG_API_KEY +"&language=en-US&page=1";
@@ -34,8 +34,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     MovieAsyncTask movieAsyncTask;
     RecyclerView view;
     RecyclerViewAdapter adapter;
-    ArrayList<MovieModel> mMovieList;
-    LoaderManager loaderManager;
     Bundle queryBundle;
 
     @Override
@@ -52,21 +50,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             else
                 view.setLayoutManager(new GridLayoutManager(getBaseContext(), 4));
 
+            adapter = new RecyclerViewAdapter(getBaseContext(), new ArrayList<MovieModel>());
+            view.setAdapter(adapter);
             queryBundle = new Bundle();
             queryBundle.putString(BUNDLE_URL_KEY, IMDBURL + "popular" + API);
 
-            loaderManager = getSupportLoaderManager();
-            Loader<ArrayList<MovieModel>> loader = loaderManager.getLoader(SEARCH_LOADER);
-            if (loader == null) {
-                Log.v(MainActivity.class.getSimpleName(), "bundle:::null");
-                loaderManager.initLoader(SEARCH_LOADER, queryBundle, this);
-            } else {
-                Log.v(MainActivity.class.getSimpleName(), "bundle:::Notnull");
-                loaderManager.restartLoader(SEARCH_LOADER, queryBundle, this);
-            }
+            getSupportLoaderManager().initLoader(SEARCH_LOADER, queryBundle, this);
+
 //            movieAsyncTask = new MovieAsyncTask(this, new MovieAsyncTaskListener());
 //            movieAsyncTask.execute();
-            adapter = new RecyclerViewAdapter(getBaseContext());
 
         }else {
             Toast.makeText(this, "Please Connect to Internet.", Toast.LENGTH_SHORT).show();
@@ -94,12 +86,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             switch (item.getItemId()){
                 case R.id.item1:
                     queryBundle.putString(BUNDLE_URL_KEY, IMDBURL + "popular" + API);
-                    loaderManager.restartLoader(SEARCH_LOADER, queryBundle, this);
+                    getSupportLoaderManager().restartLoader(SEARCH_LOADER, queryBundle, this);
                     adapter.notifyDataSetChanged();
                     return true;
                 case R.id.item2:
-                    queryBundle.putString(BUNDLE_URL_KEY, IMDBURL + "popular" + API);
-                    loaderManager.restartLoader(SEARCH_LOADER, queryBundle, this);
+                    queryBundle.putString(BUNDLE_URL_KEY, IMDBURL + "top_rated" + API);
+                    getSupportLoaderManager().restartLoader(SEARCH_LOADER, queryBundle, this);
                     adapter.notifyDataSetChanged();
                     return true;
 //            case R.id.item3:
@@ -164,15 +156,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<ArrayList<MovieModel>> loader, ArrayList<MovieModel> movieList) {
-        adapter.setMovies(movieList);
-        view.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-
     }
 
     @Override
     public void onLoaderReset(Loader<ArrayList<MovieModel>> loader) {
-        adapter.setMovies(null);
     }
 
 //

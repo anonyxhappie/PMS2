@@ -31,13 +31,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     Context context;
     MovieModel movie;
 
-    public RecyclerViewAdapter(Context context) {
+    public RecyclerViewAdapter(Context context, ArrayList<MovieModel> movies) {
         mInflater = LayoutInflater.from(context);
-        this.context = context;
-    }
-
-    public void setMovies(ArrayList<MovieModel> movies) {
         this.mMovies = movies;
+        this.context = context;
     }
 
     @Override
