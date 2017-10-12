@@ -37,6 +37,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.context = context;
     }
 
+    public void setmMovies(ArrayList<MovieModel> mMovies) {
+        this.mMovies = mMovies;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.grid_item, parent, false);

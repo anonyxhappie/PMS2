@@ -114,8 +114,7 @@ public class Utils {
                 REVIEWS_URL = MainActivity.IMDBURL + MOVIE_ID + "/reviews" + MainActivity.API;
 
                 movieList.add(new MovieModel(obj.getInt("id"), obj.getString("release_date"),
-                        0,
-                        // extractRuntimeFromJSON(makeHttpRequest(generateUrl(RUNTIME_URL))),
+                        extractRuntimeFromJSON(makeHttpRequest(generateUrl(RUNTIME_URL))),
                         obj.getDouble("vote_average"), obj.getString("original_title"),
                         obj.getString("overview"), obj.getString("poster_path"),
                         extractTrailersFromJSON(makeHttpRequest(generateUrl(VIDEOS_URL))),

@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.anonyxhappie.dwarf.pms2.adapters.RecyclerViewAdapter;
 import com.anonyxhappie.dwarf.pms2.apis.MovieModel;
-import com.anonyxhappie.dwarf.pms2.network.MovieAsyncTask;
 import com.anonyxhappie.dwarf.pms2.network.Utils;
 
 import java.io.IOException;
@@ -30,12 +29,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static final String BUNDLE_URL_KEY = "com.anonyxhappie.dwarf.pms2";
     public static String IMDBURL = "https://api.themoviedb.org/3/movie/";
     public static String API = "?api_key="+ BuildConfig.THEMOVIEDB_ORG_API_KEY +"&language=en-US&page=1";
-    public static ArrayList<MovieModel> favouriteList = new ArrayList<>();
-    MovieAsyncTask movieAsyncTask;
+    //public static ArrayList<MovieModel> favouriteList = new ArrayList<>();
     RecyclerView view;
     RecyclerViewAdapter adapter;
     Bundle queryBundle;
-
+    LoaderManager mLoaderManager;
+    Loader loader;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,24 +51,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             adapter = new RecyclerViewAdapter(getBaseContext(), new ArrayList<MovieModel>());
             view.setAdapter(adapter);
+
             queryBundle = new Bundle();
             queryBundle.putString(BUNDLE_URL_KEY, IMDBURL + "popular" + API);
 
-            getSupportLoaderManager().initLoader(SEARCH_LOADER, queryBundle, this);
-
-//            movieAsyncTask = new MovieAsyncTask(this, new MovieAsyncTaskListener());
-//            movieAsyncTask.execute();
+            mLoaderManager = getSupportLoaderManager();
+            loader = mLoaderManager.getLoader(SEARCH_LOADER);
+            mLoaderManager.initLoader(SEARCH_LOADER, queryBundle, this);
 
         }else {
             Toast.makeText(this, "Please Connect to Internet.", Toast.LENGTH_SHORT).show();
         }
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        getSupportLoaderManager().restartLoader(SEARCH_LOADER, null, this);
     }
 
     @Override
@@ -86,17 +79,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             switch (item.getItemId()){
                 case R.id.item1:
                     queryBundle.putString(BUNDLE_URL_KEY, IMDBURL + "popular" + API);
-                    getSupportLoaderManager().restartLoader(SEARCH_LOADER, queryBundle, this);
-                    adapter.notifyDataSetChanged();
+                    mLoaderManager.initLoader(SEARCH_LOADER, queryBundle, this).forceLoad();
                     return true;
                 case R.id.item2:
                     queryBundle.putString(BUNDLE_URL_KEY, IMDBURL + "top_rated" + API);
-                    getSupportLoaderManager().restartLoader(SEARCH_LOADER, queryBundle, this);
-                    adapter.notifyDataSetChanged();
+                    mLoaderManager.initLoader(SEARCH_LOADER, queryBundle, this).forceLoad();
                     return true;
 //            case R.id.item3:
-//                movieAsyncTask.updateUi(favouriteList);
-//                return true;
+//                  return true;
                 default:
                     return super.onOptionsItemSelected(item);
             }
@@ -146,35 +136,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
             }
 
-            @Override
-            protected void onStopLoading() {
-                super.onStopLoading();
-                cancelLoad();
-            }
         };
     }
 
     @Override
     public void onLoadFinished(Loader<ArrayList<MovieModel>> loader, ArrayList<MovieModel> movieList) {
+        adapter.setmMovies(movieList);
         adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onLoaderReset(Loader<ArrayList<MovieModel>> loader) {
+        adapter.setmMovies(new ArrayList<MovieModel>());
     }
-
-//
-//    public class MovieAsyncTaskListener implements AsyncTaskCompleteListener<ArrayList<MovieModel>> {
-//
-//        public MovieAsyncTaskListener() {
-//        }
-//
-//        @Override
-//        public void onTaskComplete(ArrayList<MovieModel> movieList) {
-//            adapter.setMovies(movieList);
-//            view.setAdapter(adapter);
-//            adapter.notifyDataSetChanged();
-//        }
-//
-//    }
 }
