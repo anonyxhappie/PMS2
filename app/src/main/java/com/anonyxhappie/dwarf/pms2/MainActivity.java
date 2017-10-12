@@ -14,6 +14,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.anonyxhappie.dwarf.pms2.adapters.RecyclerViewAdapter;
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     Bundle queryBundle;
     LoaderManager mLoaderManager;
     Loader loader;
+    ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         if(isNetworkAvailable()){
 
+            progressBar = (ProgressBar) findViewById(R.id.loading_spinner);
             view = (RecyclerView) findViewById(R.id.grid_view);
 
             if (getBaseContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
@@ -141,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<ArrayList<MovieModel>> loader, ArrayList<MovieModel> movieList) {
+        progressBar.setVisibility(View.GONE);
         adapter.setmMovies(movieList);
         adapter.notifyDataSetChanged();
     }
