@@ -85,13 +85,10 @@
 
                     </LinearLayout>
 
-                    <Button
+                    <CheckBox
                         android:id="@+id/favourite"
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:background="@color/colorAccent"
-                        android:text="Mark as Favourite"
-                        android:textColor="#fff" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
 
                 </LinearLayout>
             </LinearLayout>

@@ -114,8 +114,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     queryBundle.putString(BUNDLE_URL_KEY, IMDBURL + "top_rated" + API);
                     mLoaderManager.initLoader(SEARCH_LOADER, queryBundle, this).forceLoad();
                     return true;
-//            case R.id.item3:
-//                  return true;
+                case R.id.item3:
+                    Toast.makeText(this, "You Clicked Favourites.", Toast.LENGTH_LONG).show();
+                    return true;
                 default:
                     return super.onOptionsItemSelected(item);
             }

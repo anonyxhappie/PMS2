@@ -4,9 +4,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.anonyxhappie.dwarf.pms2.adapters.ReviewsAdapter;
 import com.anonyxhappie.dwarf.pms2.adapters.TrailersAdapter;
@@ -32,7 +34,7 @@ public class DetailsActivity extends AppCompatActivity {
     @BindView(R.id.year)
     TextView date;
     @BindView(R.id.favourite)
-    Button favourite;
+    CheckBox favourite;
     @BindView(R.id.runtime)
     TextView runtime;
     @BindView(R.id.trailers)
@@ -70,27 +72,17 @@ public class DetailsActivity extends AppCompatActivity {
         trailerList.setLayoutManager(new LinearLayoutManager(this));
         trailerList.setAdapter(trailersAdapter);
 
-//
-//        if (movieModel.isFavourite()) {
-//            favourite.setText("Remove From Favourites");
-//        } else {
-//            favourite.setText("Mark As Favourite");
-//        }
-//
-//        favourite.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (movieModel.isFavourite() == false) {
-//                    movieModel.setFavourite(true);
-//                    MainActivity.favouriteList.add(movieModel);
-//                    favourite.setText("Remove From Favourites");
-//                } else {
-//                    movieModel.setFavourite(false);
-//                    MainActivity.favouriteList.remove(movieModel);
-//                    favourite.setText("Mark As Favourite");
-//                }
-//            }
-//        });
+
+        favourite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    Toast.makeText(getBaseContext(), "Marked As Favourite.", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getBaseContext(), "Removed From Favourites.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
 }
