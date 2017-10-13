@@ -116,7 +116,7 @@ public class MovieContentProvider extends ContentProvider {
         switch (match) {
             case MOVIE_WITH_ID:
                 String id = uri.getPathSegments().get(1);
-                String mSelection = "_id=?";
+                String mSelection = MovieContract.MovieEntry.COLUMN_ID + "=?";
                 String[] mSelectionArgs = new String[]{id};
                 numberOfDeletions = db.delete(MovieContract.MovieEntry.TABLE_NAME,
                         mSelection,
