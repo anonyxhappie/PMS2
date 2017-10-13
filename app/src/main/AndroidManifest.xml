@@ -6,9 +6,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/icon_play"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
@@ -19,8 +18,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".DetailsActivity"
-            android:label="@string/details_activity"
-            ></activity>
+            android:label="@string/details_activity"></activity>
+
+        <provider
+            android:name=".database.MovieContentProvider"
+            android:authorities="com.anonyxhappie.dwarf.pms2"
+            android:exported="false" />
     </application>
 
 </manifest>

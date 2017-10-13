@@ -1,5 +1,7 @@
 package com.anonyxhappie.dwarf.pms2;
 
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 import com.anonyxhappie.dwarf.pms2.adapters.ReviewsAdapter;
 import com.anonyxhappie.dwarf.pms2.adapters.TrailersAdapter;
 import com.anonyxhappie.dwarf.pms2.apis.MovieModel;
+import com.anonyxhappie.dwarf.pms2.database.MovieContract;
 import com.anonyxhappie.dwarf.pms2.network.Utils;
 import com.bumptech.glide.Glide;
 
@@ -41,17 +44,28 @@ public class DetailsActivity extends AppCompatActivity {
     RecyclerView trailerList;
     @BindView(R.id.reviews)
     RecyclerView reviewList;
+    MovieModel movieModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         ButterKnife.bind(this);
         updateView();
     }
 
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+
     private void updateView() {
-        final MovieModel movieModel = getIntent().getParcelableExtra("i_key");
+        movieModel = getIntent().getParcelableExtra("i_key");
 
         title.setText(movieModel.getOriginal_title());
         Glide.with(this)
@@ -77,12 +91,35 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    Toast.makeText(getBaseContext(), "Marked As Favourite.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getBaseContext(), "Marked As Favourite.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getBaseContext(), "Removed From Favourites.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getBaseContext(), "Removed From Favourites.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    private void addToFavourites() {
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MovieContract.MovieEntry.COLUMN_ID, movieModel.getId());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE, movieModel.getOriginal_title());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, movieModel.getRelease_date());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_RUNTIME, String.valueOf(movieModel.getRuntime()));
+        contentValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, String.valueOf(movieModel.getVote_average()));
+        contentValues.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, movieModel.getOverview());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, movieModel.getPoster_path());
+
+        Uri uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
+        finish();
+
+    }
+
+    private void removeFromFavourites() {
+        String id = ""; //  TODO - to add after query
+        Uri uri = MovieContract.MovieEntry.CONTENT_URI;
+        uri = uri.buildUpon().appendPath(id).build();
+        getContentResolver().delete(uri, null, null);
     }
 
 }

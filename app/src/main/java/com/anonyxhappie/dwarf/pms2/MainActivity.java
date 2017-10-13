@@ -38,13 +38,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     LoaderManager mLoaderManager;
     Loader loader;
     ProgressBar progressBar;
-    int isFirstLoad;
+    //int isFirstLoad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        isFirstLoad = 0;
+
+//        isFirstLoad = 0;
         Log.v(MainActivity.class.getSimpleName(), ":::Create called");
         if(isNetworkAvailable()){
 
@@ -76,15 +77,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onResume() {
         super.onResume();
         Log.v(MainActivity.class.getSimpleName(), ":::Resume called");
-        if (adapter != null && isFirstLoad > 0) {
-            mLoaderManager.getLoader(SEARCH_LOADER).cancelLoad();
-        }
+//        if (adapter != null && isFirstLoad > 0) {
+//            mLoaderManager.getLoader(SEARCH_LOADER).cancelLoad();
+//        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        isFirstLoad++;
+        //    isFirstLoad++;
         Log.v(MainActivity.class.getSimpleName(), ":::Stop called");
     }
 
@@ -115,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     mLoaderManager.initLoader(SEARCH_LOADER, queryBundle, this).forceLoad();
                     return true;
                 case R.id.item3:
-                    Toast.makeText(this, "You Clicked Favourites.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "You Clicked Favourites.", Toast.LENGTH_SHORT).show();
                     return true;
                 default:
                     return super.onOptionsItemSelected(item);
