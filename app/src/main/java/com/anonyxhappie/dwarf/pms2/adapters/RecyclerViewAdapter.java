@@ -54,7 +54,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         movie = mMovies.get(position);
 
         RequestOptions options = new RequestOptions()
-                .centerCrop().placeholder(R.drawable.loading_spinner);
+                .centerCrop().placeholder(R.drawable.icon_play);
         Glide.with(context)
                 .load(Utils.generateImageUrl(movie.getPoster_path()))
                 .apply(options)
@@ -81,7 +81,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public void onClick(View v) {
             Intent intent = new Intent(context, DetailsActivity.class);
             intent.putExtra("i_key", movie);
-            Log.v(MainActivity.class.getSimpleName(), "movie:::" + getItemId());
+            Log.v(MainActivity.class.getSimpleName(), "ItemId:::" + v.getId() + ", MovieId:::" + movie.getId());
             context.startActivity(intent);
         }
 
