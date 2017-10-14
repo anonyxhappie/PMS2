@@ -18,7 +18,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.anonyxhappie.dwarf.pms2.adapters.RecyclerViewAdapter;
+import com.anonyxhappie.dwarf.pms2.adapters.GridViewAdapter;
 import com.anonyxhappie.dwarf.pms2.apis.MovieModel;
 import com.anonyxhappie.dwarf.pms2.network.Utils;
 
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static String API = "?api_key="+ BuildConfig.THEMOVIEDB_ORG_API_KEY +"&language=en-US&page=1";
     //public static ArrayList<MovieModel> favouriteList = new ArrayList<>();
     RecyclerView view;
-    RecyclerViewAdapter adapter;
+    GridViewAdapter adapter;
     Bundle queryBundle;
     LoaderManager mLoaderManager;
     Loader loader;
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             else
                 view.setLayoutManager(new GridLayoutManager(getBaseContext(), 4));
 
-            adapter = new RecyclerViewAdapter(getBaseContext(), new ArrayList<MovieModel>());
+            adapter = new GridViewAdapter(getBaseContext(), new ArrayList<MovieModel>());
             view.setAdapter(adapter);
 
             queryBundle = new Bundle();

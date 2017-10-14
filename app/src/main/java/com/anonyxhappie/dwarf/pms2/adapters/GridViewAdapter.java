@@ -3,14 +3,12 @@ package com.anonyxhappie.dwarf.pms2.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.anonyxhappie.dwarf.pms2.DetailsActivity;
-import com.anonyxhappie.dwarf.pms2.MainActivity;
 import com.anonyxhappie.dwarf.pms2.R;
 import com.anonyxhappie.dwarf.pms2.apis.MovieModel;
 import com.anonyxhappie.dwarf.pms2.network.Utils;
@@ -26,17 +24,19 @@ import butterknife.ButterKnife;
  * Created by dwarf on 9/28/2017.
  */
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+public class GridViewAdapter extends RecyclerView.Adapter<GridViewAdapter.ViewHolder> {
 
     ArrayList<MovieModel> mMovies;
     LayoutInflater mInflater;
     Context context;
     MovieModel movie;
+    Intent intent;
 
-    public RecyclerViewAdapter(Context context, ArrayList<MovieModel> movies) {
+    public GridViewAdapter(Context context, ArrayList<MovieModel> movies) {
         mInflater = LayoutInflater.from(context);
         this.mMovies = movies;
         this.context = context;
+        intent = new Intent(context, DetailsActivity.class);
     }
 
     public void setmMovies(ArrayList<MovieModel> mMovies) {
@@ -52,13 +52,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         movie = mMovies.get(position);
-
         RequestOptions options = new RequestOptions()
                 .centerCrop().placeholder(R.drawable.icon_play);
         Glide.with(context)
                 .load(Utils.generateImageUrl(movie.getPoster_path()))
                 .apply(options)
                 .into(holder.imageView);
+        holder.imageView.setTag(R.id.image, position);
     }
 
     @Override
@@ -79,9 +79,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(context, DetailsActivity.class);
-            intent.putExtra("i_key", movie);
-            Log.v(MainActivity.class.getSimpleName(), "ItemId:::" + v.getId() + ", MovieId:::" + movie.getId());
+            intent.putExtra("i_key", mMovies.get((Integer) v.getTag(R.id.image)));
             context.startActivity(intent);
         }
 

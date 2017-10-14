@@ -12,8 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.anonyxhappie.dwarf.pms2.adapters.ReviewsAdapter;
-import com.anonyxhappie.dwarf.pms2.adapters.TrailersAdapter;
+import com.anonyxhappie.dwarf.pms2.adapters.ListViewAdapter;
 import com.anonyxhappie.dwarf.pms2.apis.MovieModel;
 import com.anonyxhappie.dwarf.pms2.database.MovieContract;
 import com.anonyxhappie.dwarf.pms2.network.Utils;
@@ -78,14 +77,13 @@ public class DetailsActivity extends AppCompatActivity {
 
         // Log.i(LOGTAG, "::::"+ movieModel.getVideos().toString());
 
-        ReviewsAdapter reviewsAdapter = new ReviewsAdapter(this, movieModel.getReviews());
-        reviewList.setLayoutManager(new LinearLayoutManager(this));
-        reviewList.setAdapter(reviewsAdapter);
-
-        TrailersAdapter trailersAdapter = new TrailersAdapter(this, movieModel.getVideos());
+        ListViewAdapter trailerListViewAdapter = new ListViewAdapter(this, movieModel.getVideos(), 'T');
         trailerList.setLayoutManager(new LinearLayoutManager(this));
-        trailerList.setAdapter(trailersAdapter);
+        trailerList.setAdapter(trailerListViewAdapter);
 
+        ListViewAdapter reviewListViewAdapter = new ListViewAdapter(this, movieModel.getReviews(), 'R');
+        reviewList.setLayoutManager(new LinearLayoutManager(this));
+        reviewList.setAdapter(reviewListViewAdapter);
 
         favourite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
