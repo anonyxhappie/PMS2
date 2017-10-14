@@ -38,14 +38,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     LoaderManager mLoaderManager;
     Loader loader;
     ProgressBar progressBar;
-    //int isFirstLoad;
+    ArrayList<MovieModel> mMovies = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        isFirstLoad = 0;
         Log.v(MainActivity.class.getSimpleName(), ":::Create called");
         if(isNetworkAvailable()){
 
@@ -67,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             loader = mLoaderManager.getLoader(SEARCH_LOADER);
             mLoaderManager.initLoader(SEARCH_LOADER, queryBundle, this);
 
+
         }else {
             Toast.makeText(this, "Please Connect to Internet.", Toast.LENGTH_SHORT).show();
         }
@@ -77,15 +77,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onResume() {
         super.onResume();
         Log.v(MainActivity.class.getSimpleName(), ":::Resume called");
-//        if (adapter != null && isFirstLoad > 0) {
-//            mLoaderManager.getLoader(SEARCH_LOADER).cancelLoad();
-//        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        //    isFirstLoad++;
         Log.v(MainActivity.class.getSimpleName(), ":::Stop called");
     }
 
@@ -142,19 +138,25 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         return new AsyncTaskLoader<ArrayList<MovieModel>>(this) {
 
+            String stringUrl;
+
             @Override
             protected void onStartLoading() {
                 super.onStartLoading();
                 if (args == null) {
                     return;
                 }
-                forceLoad();
+                if (mMovies == null) {
+                    forceLoad();
+                } else {
+                    deliverResult(mMovies);
+                }
             }
 
             @Override
             public ArrayList<MovieModel> loadInBackground() {
-                String stringUrl = args.getString(BUNDLE_URL_KEY);
-                Log.v(MainActivity.class.getSimpleName(), "bundle:::" + stringUrl);
+                stringUrl = args.getString(BUNDLE_URL_KEY);
+                //Log.v(MainActivity.class.getSimpleName(), "bundle:::" + stringUrl);
                 if (stringUrl == null | TextUtils.isEmpty(stringUrl)) {
                     return null;
                 }
@@ -166,6 +168,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
             }
 
+            @Override
+            public void deliverResult(ArrayList<MovieModel> data) {
+                mMovies = data;
+                super.deliverResult(data);
+            }
         };
     }
 
@@ -178,6 +185,5 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(Loader<ArrayList<MovieModel>> loader) {
-        adapter.setmMovies(new ArrayList<MovieModel>());
     }
 }
