@@ -52,13 +52,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         movie = mMovies.get(position);
-
         RequestOptions options = new RequestOptions()
                 .centerCrop().placeholder(R.drawable.icon_play);
         Glide.with(context)
                 .load(Utils.generateImageUrl(movie.getPoster_path()))
                 .apply(options)
                 .into(holder.imageView);
+        holder.imageView.setTag(R.id.image, position);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(context, DetailsActivity.class);
-            intent.putExtra("i_key", movie);
+            intent.putExtra("i_key", mMovies.get((Integer) v.getTag(R.id.image)));
             Log.v(MainActivity.class.getSimpleName(), "ItemId:::" + v.getId() + ", MovieId:::" + movie.getId());
             context.startActivity(intent);
         }
