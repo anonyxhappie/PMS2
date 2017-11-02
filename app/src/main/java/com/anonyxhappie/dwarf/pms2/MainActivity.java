@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Log.v(MainActivity.class.getSimpleName(), ":::Create called");
         if(isNetworkAvailable()){
 
+            Toast.makeText(this, "Please wait... Getting movies for you!", Toast.LENGTH_LONG).show();
             progressBar = (ProgressBar) findViewById(R.id.loading_spinner);
             view = (RecyclerView) findViewById(R.id.grid_view);
 
@@ -104,10 +105,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if(isNetworkAvailable()){
             switch (item.getItemId()){
                 case R.id.item1:
+                    Toast.makeText(this, "Please wait...Page will reload automatically!", Toast.LENGTH_SHORT).show();
                     queryBundle.putString(BUNDLE_URL_KEY, IMDBURL + "popular" + API);
                     mLoaderManager.initLoader(SEARCH_LOADER, queryBundle, this).forceLoad();
                     return true;
                 case R.id.item2:
+                    Toast.makeText(this, "Please wait...Page will reload automatically!", Toast.LENGTH_SHORT).show();
                     queryBundle.putString(BUNDLE_URL_KEY, IMDBURL + "top_rated" + API);
                     mLoaderManager.initLoader(SEARCH_LOADER, queryBundle, this).forceLoad();
                     return true;

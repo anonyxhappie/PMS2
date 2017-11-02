@@ -89,10 +89,10 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    //if (addToFavourites())
+                    if (addToFavourites())
                     Toast.makeText(getBaseContext(), "Marked As Favourite.", Toast.LENGTH_SHORT).show();
                 } else {
-                    //if (removeFromFavourites())
+                    if (removeFromFavourites())
                     Toast.makeText(getBaseContext(), "Removed From Favourites.", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -102,7 +102,7 @@ public class DetailsActivity extends AppCompatActivity {
     private boolean addToFavourites() {
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(MovieContract.MovieEntry.COLUMN_ID, movieModel.getId());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_ID, String.valueOf(movieModel.getId()));
         contentValues.put(MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE, movieModel.getOriginal_title());
         contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, movieModel.getRelease_date());
         contentValues.put(MovieContract.MovieEntry.COLUMN_RUNTIME, String.valueOf(movieModel.getRuntime()));
@@ -115,6 +115,7 @@ public class DetailsActivity extends AppCompatActivity {
             return false;
         }
         finish();
+
         return true;
     }
 
